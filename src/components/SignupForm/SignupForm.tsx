@@ -7,10 +7,10 @@ import RadioGroup from '@/components/RadioGroup/RadioGroup'
 import NameInput from '@/components/Fields/inputs/NameInput'
 import EmailInput from '@/components/Fields/inputs/EmailInput'
 import PhoneInput from '@/components/Fields/inputs/PhoneInput'
-
+import type { User } from '@/types/user'
 import photoCoverUrl from '@/assets/img/photo-cover.jpg'
 
-type Props = { onSuccess?: () => void }
+type Props = { onSuccess?: (user: User) => void }
 
 export default function SignupForm({ onSuccess }: Props) {
   const [name, setName] = useState('')
@@ -41,7 +41,6 @@ export default function SignupForm({ onSuccess }: Props) {
   }, [photo])
 
   const positionError = positionId ? null : 'Select position'
-
   const formValid = nameOk && emailOk && phoneOk && !positionError && !photoError
 
   async function getFallbackPhoto(): Promise<File> {
@@ -51,24 +50,42 @@ export default function SignupForm({ onSuccess }: Props) {
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
-    setSubmitted(true)
-    if (!formValid || !positionId) return
+
+    const isValid = nameOk && emailOk && phoneOk && !!positionId && !photoError
+    if (!isValid) {
+      setSubmitted(true) 
+      return
+    }
+    setSubmitted(false)
 
     try {
       setLoading(true)
-
       const fileToSend = photo ?? (await getFallbackPhoto())
 
       await postUser({
         name: name.trim(),
         email: email.trim(),
         phone: phone.trim(),
-        position_id: positionId,
+        position_id: Number(positionId),
         photo: fileToSend,
       })
 
+      const posName = positions.find(p => p.id === positionId)?.name ?? ''
+      const photoUrl = URL.createObjectURL(fileToSend)
+
+      const optimisticUser: User = {
+        id: Date.now(), 
+        name: name.trim(),
+        email: email.trim(),
+        phone: phone.trim(),
+        position: posName, 
+        position_id: Number(positionId),
+        photo: photoUrl,
+      }
+
       setDone(true)
-      onSuccess?.()
+      onSuccess?.(optimisticUser)
+
     } catch (err: any) {
       alert(err?.message ?? 'Failed to register')
     } finally {
@@ -89,21 +106,18 @@ export default function SignupForm({ onSuccess }: Props) {
           submitted={submitted}
           onValidityChange={setNameOk}
         />
-
         <EmailInput
           value={email}
           onChange={setEmail}
           submitted={submitted}
           onValidityChange={setEmailOk}
         />
-
         <PhoneInput
           value={phone}
           onChange={setPhone}
           submitted={submitted}
           onValidityChange={setPhoneOk}
         />
-
         <RadioGroup
           title="Select your position"
           options={positions.map(p => ({ id: p.id, label: p.name }))}
@@ -112,15 +126,12 @@ export default function SignupForm({ onSuccess }: Props) {
           error={positionError}
           showError={submitted}
         />
-
-        {}
         <UploadField
           filename={photo?.name}
           onChange={(file) => setPhoto(file)}
           error={submitted ? photoError : null}
           showError={submitted && !!photoError}
         />
-
         <div className={s.actions}>
           <Button type="submit" disabled={!formValid || loading}>
             Sign up

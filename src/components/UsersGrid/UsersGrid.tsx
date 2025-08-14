@@ -6,7 +6,11 @@ import Button from '@/components/Button/Button'
 import Preloader from '@/components/Preloader/Preloader'
 import s from './UsersGrid.module.scss'
 
-export default function UsersGrid() {
+type Props = {
+  prependUser?: User | null
+}
+
+export default function UsersGrid({ prependUser }: Props) {
   const [users, setUsers] = useState<User[]>([])
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
@@ -24,6 +28,14 @@ export default function UsersGrid() {
       }
     })()
   }, [page])
+
+  useEffect(() => {
+    if (!prependUser) return
+    setUsers(prev => {
+      const without = prev.filter(u => u.id !== prependUser.id)
+      return [prependUser, ...without]
+    })
+  }, [prependUser])
 
   const loadMore = () => setPage(p => p + 1)
 
