@@ -1,0 +1,46 @@
+@use '@/styles/Variables.scss' as v;
+@use '@/styles/Mixins.scss' as m;
+
+.btn {
+  border: none;
+  outline: none;
+  cursor: pointer;
+  @include m.font(16, 26, 400, v.$font-primary); 
+  text-align: center;
+  border-radius: 80px;
+  padding: 4px 18px;
+  min-width: 100px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+
+  &:focus {
+    outline: none;
+    box-shadow: none;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: none;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+.yellow {
+  @include m.bg(yellow);
+  @include m.text(black);
+
+  &:not(:disabled):hover {
+    @include m.bg(yellow-hover);
+  }
+
+  &:disabled {
+    @include m.bg(gray-disabled);
+    @include m.text(white);
+  }
+}

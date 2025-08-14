@@ -1,0 +1,17 @@
+@use '@/styles/Mixins.scss' as m;
+
+.wrap {
+  @include m.grid(auto, auto, 50px, center, center);
+  padding: 40px 0;
+}
+
+.title {
+  @include m.h1;
+  text-align: center;
+  margin: 0;
+}
+
+.img {
+  width: min(328px, 80%);
+  height: auto;
+}

@@ -1,0 +1,93 @@
+@use '@/styles/Mixins.scss' as m;
+
+
+.inputWrap {
+  width: 100%;
+  max-width: 380px;
+}
+
+.field {
+  position: relative;
+  @include m.flex(column, flex-start, stretch, nowrap, 6px);
+
+  input {
+    box-sizing: border-box;
+    width: 100%;
+    height: 54px;
+    border-radius: 4px;
+    @include m.border(field-border-color, 1px);
+    @include m.bg(light-gray);
+    outline: none;
+    font: inherit;
+    padding: 14px 16px 12px 16px;
+
+    &::placeholder { color: transparent; }
+
+    &:focus { @include m.border(field-border-color, 1px); }
+    &:focus,
+    &:valid {
+      background-color: m.color(light-gray) !important;
+    }
+
+    &:-webkit-autofill,
+    &:-webkit-autofill:hover,
+    &:-webkit-autofill:focus {
+      -webkit-text-fill-color: m.color(black);
+      caret-color: m.color(black);
+      -webkit-box-shadow: 0 0 0px 1000px #{m.color(light-gray)} inset;
+              box-shadow: 0 0 0px 1000px #{m.color(light-gray)} inset;
+      border: 1px solid #{m.color(field-border-color)};
+    }
+    &:-moz-ui-valid,
+    &:-moz-ui-invalid {
+      background-color: m.color(light-gray) !important;
+    }
+  }
+
+  &::before {
+    content: attr(data-placeholder);
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 0 2px;
+    @include m.text(gray-disabled);
+    @include m.bg(light-gray);
+    font-size: 16px;
+    line-height: 16px;
+    pointer-events: none;
+    transition:
+      top .18s ease,
+      transform .18s ease,
+      font-size .18s ease,
+      color .18s ease,
+      background-color .18s ease,
+      padding .18s ease;
+  }
+
+  &:focus-within::before,
+  &.filled::before {
+    top: -8px;
+    transform: none;
+    font-size: 12px;
+    line-height: 12px;
+    @include m.text(gray-disabled);
+    @include m.bg(light-gray);
+    padding: 0 4px;
+  }
+
+  &.error input { @include m.border(error, 2px); }
+  &.error::before { @include m.text(error); }
+}
+
+.msg {
+  position: absolute;
+  min-height: 24px;
+  padding: 4px 16px;
+  @include m.font-asap(12, 14, 400);
+  @include m.text(gray-disabled);
+
+  &.error {
+    @include m.text(error);
+  }
+}

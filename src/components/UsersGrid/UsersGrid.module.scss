@@ -1,0 +1,44 @@
+@use '@/styles/Mixins.scss' as m;
+
+.users {
+  display: grid;
+  grid-template-rows: auto auto auto;
+  row-gap: 50px;
+  box-sizing: border-box;
+  @include m.responsive-padding;
+  width: 100%;
+}
+
+.title {
+  @include m.h1;
+  text-align: center;
+}
+
+.grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px; 
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 29px;
+  }
+}
+
+.actions {
+  @include m.flex(row, center, center, nowrap, 0);
+}
+
+.moreBtn {
+  margin-top: 0;
+}

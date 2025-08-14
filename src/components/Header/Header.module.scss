@@ -1,0 +1,23 @@
+@use '@/styles/Mixins.scss' as m;
+
+.header {
+  @include m.bg(white);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 16px 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.wrapper {
+  @include m.flex(row, space-between, center, nowrap, 14px);
+  max-width: 1170px;
+  margin: 0 auto;
+
+  padding: 0 16px;
+}
+
+.nav {
+  @include m.flex(row, flex-start, center, nowrap, 10px);
+}

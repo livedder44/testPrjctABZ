@@ -1,0 +1,78 @@
+@use '@/styles/Mixins.scss' as m;
+
+.group {
+  width: 100%;
+  max-width: 380px;
+}
+
+.title {
+  margin: 0 0 11px;
+}
+
+.list {
+  @include m.flex(column, flex-start, stretch, nowrap, 10px);
+}
+
+.item {
+  @include m.flex(row, flex-start, center, nowrap, 8px);
+  cursor: pointer;
+
+  input[type="radio"] {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+
+
+    @include m.border(field-border-color, 1px);
+
+    position: relative;
+    cursor: pointer;
+    outline: none;
+    transition: box-shadow .2s ease, border-color .2s ease;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: m.color(blue);
+      transform: translate(-50%, -50%) scale(0.2);
+      opacity: 0;
+      transition: transform .18s ease, opacity .18s ease;
+      color: m.color(black);
+    }
+
+
+    &:checked {
+      @include m.border(blue, 1px);
+
+      &::before {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+      }
+    }
+
+    &:focus-visible {
+      box-shadow: 0 0 0 3px rgba(0, 189, 211, .25);
+    }
+  }
+
+  .text {
+    user-select: none;
+  }
+}
+
+.error {
+  @include m.text(error);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .item input[type="radio"],
+  .item input[type="radio"]::before {
+    transition: none !important;
+  }
+}

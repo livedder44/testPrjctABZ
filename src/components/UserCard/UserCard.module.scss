@@ -1,0 +1,90 @@
+@use '@/styles/Mixins.scss' as m;
+
+.card {
+  @include m.bg(white);
+  border-radius: 10px;
+  padding: 20px;
+
+  @include m.grid(auto, auto auto 1fr, 0, stretch, stretch);
+
+  text-align: center;
+
+  width: 100%;
+  margin-inline: auto;
+
+
+}
+
+.photo {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  justify-self: center;
+  margin-bottom: 20px;
+}
+.name {
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+.name,
+.position,
+.email,
+.phone {
+  margin: 0;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  cursor: pointer;
+}
+.name {
+  margin-bottom: 20px;
+}
+.info {
+  @include m.flex(column, flex-start, stretch, nowrap, 0);
+  min-width: 0;
+  position: relative; 
+}
+
+
+
+
+.tooltipWrapper {
+  position: relative; 
+  display: inline-block;
+}
+
+.tooltip {
+  position: absolute;
+  left: 70%;
+  top: 100%;
+  padding: 3px 16px;
+  border-radius: 4px;
+  @include m.bg(black);
+  color: m.color(white);
+  white-space: nowrap;
+  overflow-wrap: break-word;
+  z-index: 100;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateX(-50%);
+  transition: opacity .12s ease, visibility .12s ease, transform .12s ease;
+}
+
+.name:hover + .tooltip,
+.name:focus-visible + .tooltip,
+.position:hover + .tooltip,
+.position:focus-visible + .tooltip,
+.email:hover + .tooltip,
+.email:focus-visible + .tooltip,
+.phone:hover + .tooltip,
+.phone:focus-visible + .tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+

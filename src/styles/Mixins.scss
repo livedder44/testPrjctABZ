@@ -1,0 +1,138 @@
+@use 'Variables' as v;
+
+@mixin responsive-padding {
+  padding-left: 16px;
+  padding-right: 16px;
+
+  @media (min-width: 768px) {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+
+  @media (min-width: 1024px) {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+
+
+@function color($name) {
+  @if map-has-key(v.$colors, $name) {
+    @return map-get(v.$colors, $name);
+  }
+  @error "Unknown color `#{$name}`. Allowed: #{map-keys(v.$colors)}";
+}
+
+@mixin bg($name) {
+  background-color: color($name);
+}
+
+@mixin text($name) {
+  color: color($name);
+}
+
+@mixin border($name, $width: 1px, $style: solid) {
+  border: $width $style color($name);
+}
+
+@mixin ring($name, $width: 2px) {
+  box-shadow: 0 0 0 $width color($name);
+}
+
+@mixin hover-bg($name, $hover-name: null) {
+  $target: if($hover-name == null, #{$name}-hover, $hover-name);
+
+  &:hover {
+    @if map-has-key(v.$colors, $target) {
+      background-color: color($target);
+    } @else {
+      background-color: color($name);
+      filter: brightness(.97);
+    }
+  }
+}
+
+
+@mixin font($size, $lineHeight, $weight: 400, $family: v.$font-primary, $style: normal) {
+  font-family: $family;
+  font-weight: $weight;
+  font-style: $style;
+  font-size: #{$size}px;
+  line-height: #{$lineHeight}px;
+}
+
+@mixin h1($family: v.$font-primary) {
+  @include font(v.$h1-font-size, v.$h1-line-height, v.$h1-font-weight, $family);
+}
+
+@mixin p1($family: v.$font-primary) {
+  @include font(v.$body-font-size, v.$body-line-height, v.$body-font-weight, $family);
+}
+
+$font-asap-name: 'Asap';
+$font-asap: 'Asap', sans-serif;
+
+@mixin font-face-asap {
+  @font-face {
+    font-family: #{$font-asap-name};
+    src: url('@/assets/fonts/Asap-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+}
+
+@mixin font-asap($size, $lineHeight, $weight: 400, $style: normal) {
+  @include font($size, $lineHeight, $weight, $family: $font-asap, $style: $style);
+}
+
+
+@mixin msg-asap($color: gray-disabled, $text: 'asap') {
+  @include font-asap(12, 16, 400);
+  @include text($color);
+  position: absolute;
+  min-height: 24px;
+  padding: 4px 16px;
+
+  &::after {
+    content: $text;
+    display: inline-block;
+    margin-left: 4px;
+  }
+}
+
+
+%h1 { @include h1(); }
+%p1 { @include p1(); }
+
+@mixin flex(
+  $direction: row,
+  $justify: flex-start,
+  $align: stretch,
+  $wrap: nowrap,
+  $gap: 0
+) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: $justify;
+  align-items: $align;
+  flex-wrap: $wrap;
+  gap: $gap;
+}
+
+
+@mixin grid(
+  $columns: auto,
+  $rows: auto,
+  $gap: 0,
+  $justify: stretch,
+  $align: stretch
+) {
+  display: grid;
+  grid-template-columns: $columns;
+  grid-template-rows: $rows;
+  gap: $gap;
+  justify-items: $justify;
+  align-items: $align;
+}
