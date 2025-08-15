@@ -34,6 +34,7 @@
 
 .actions {
   @include m.flex(row, center, center);
+  position: relative;
 }
 
 .msg {
@@ -42,6 +43,8 @@
   font-size: 12px;
   line-height: 16px;
   @include m.text(gray-disabled);
+  position: absolute;
+  top: 40px;
 
   &.error { @include m.text(error); }
 }

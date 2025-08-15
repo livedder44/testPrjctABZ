@@ -28,6 +28,8 @@ export default function SignupForm({ onSuccess }: Props) {
   const [emailOk, setEmailOk] = useState(false)
   const [phoneOk, setPhoneOk] = useState(false)
 
+  const [submitError, setSubmitError] = useState<string | null>(null)
+
   useEffect(() => {
     getPositions().then(r => setPositions(r.positions)).catch(console.error)
   }, [])
@@ -51,9 +53,11 @@ export default function SignupForm({ onSuccess }: Props) {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
 
+    setSubmitError(null)
+
     const isValid = nameOk && emailOk && phoneOk && !!positionId && !photoError
     if (!isValid) {
-      setSubmitted(true) 
+      setSubmitted(true)
       return
     }
     setSubmitted(false)
@@ -74,20 +78,23 @@ export default function SignupForm({ onSuccess }: Props) {
       const photoUrl = URL.createObjectURL(fileToSend)
 
       const optimisticUser: User = {
-        id: Date.now(), 
+        id: Date.now(),
         name: name.trim(),
         email: email.trim(),
         phone: phone.trim(),
-        position: posName, 
+        position: posName,
         position_id: Number(positionId),
         photo: photoUrl,
       }
 
       setDone(true)
       onSuccess?.(optimisticUser)
-
     } catch (err: any) {
-      alert(err?.message ?? 'Failed to register')
+      const msg =
+        err?.response?.data?.message ||
+        err?.message ||
+        'Something went wrong. Please try again.'
+      setSubmitError(msg)
     } finally {
       setLoading(false)
     }
@@ -106,18 +113,21 @@ export default function SignupForm({ onSuccess }: Props) {
           submitted={submitted}
           onValidityChange={setNameOk}
         />
+
         <EmailInput
           value={email}
           onChange={setEmail}
           submitted={submitted}
           onValidityChange={setEmailOk}
         />
+
         <PhoneInput
           value={phone}
           onChange={setPhone}
           submitted={submitted}
           onValidityChange={setPhoneOk}
         />
+
         <RadioGroup
           title="Select your position"
           options={positions.map(p => ({ id: p.id, label: p.name }))}
@@ -126,17 +136,32 @@ export default function SignupForm({ onSuccess }: Props) {
           error={positionError}
           showError={submitted}
         />
+
         <UploadField
           filename={photo?.name}
           onChange={(file) => setPhoto(file)}
           error={submitted ? photoError : null}
           showError={submitted && !!photoError}
         />
+                                
+
         <div className={s.actions}>
+                          {submitError && (
+          <div
+            className={`${s.msg} ${s.error}`}
+            role="alert"
+            aria-live="polite"
+          >
+            {submitError}
+          </div>
+        )}
+
           <Button type="submit" disabled={!formValid || loading}>
             Sign up
           </Button>
         </div>
+
+
       </form>
     </section>
   )
